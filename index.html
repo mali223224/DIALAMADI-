@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoiumaX Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B35',
+                        secondary: '#2A9D8F',
+                        accent: '#F4A261',
+                        dark: '#264653',
+                        light: '#E9C46A'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        
+        .dashboard-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .language-flag {
+            width: 24px;
+            height: 16px;
+            border-radius: 3px;
+            box-shadow: 0 0 2px rgba(0,0,0,0.2);
+        }
+        
+        .chart-container {
+            height: 300px;
+        }
+        
+        .subscription-plan {
+            transition: all 0.3s ease;
+        }
+        
+        .subscription-plan:hover {
+            transform: scale(1.03);
+        }
+        
+        .active-plan {
+            border: 2px solid #FF6B35;
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+        
+        .order-status {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-preparing {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .status-delivering {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-delivered {
+            background-color: #ede9fe;
+            color: #5b21b6;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-utensils text-primary text-2xl mr-2"></i>
+                        <span class="font-bold text-xl text-dark">NoiumaX</span>
+                        <span class="text-primary font-bold">Admin</span>
+                    </div>
+                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                        <a href="#" class="border-primary text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Dashboard</a>
+                        <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Orders</a>
+                        <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Restaurants</a>
+                        <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Drivers</a>
+                        <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Analytics</a>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <button class="relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary shadow-sm hover:bg-orange-600 focus:outline-none">
+                            <i class="fas fa-bell mr-2"></i>
+                            <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">5</span>
+                        </button>
+                    </div>
+                    <div class="ml-3 relative">
+                        <div class="flex items-center">
+                            <div class="text-right mr-3 hidden md:block">
+                                <p class="text-sm font-medium text-gray-900">Admin User</p>
+                                <p class="text-xs font-medium text-gray-500">admin@noiumax.com</p>
+                            </div>
+                            <div>
+                                <button class="flex text-sm rounded-full focus:outline-none">
+                                    <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 bg-white shadow-md h-screen sticky top-0 hidden md:block">
+            <div class="p-4">
+                <h2 class="text-xl font-bold text-dark mb-6">Admin Panel</h2>
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#" class="flex items-center p-3 text-gray-700 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-tachometer-alt mr-3 text-primary"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-3 text-gray-700 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-shopping-cart mr-3 text-primary"></i>
+                            <span>Orders</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-3 text-gray-700 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-utensils mr-3 text-primary"></i>
+                            <span>Restaurants</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-3 text-gray-700 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-motorcycle mr-3 text-primary"></i>
+                            <span>Drivers</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-3 text-gray-700 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-users mr-3 text-primary"></i>
+                            <span>Customers</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-3 text-gray-700 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-chart-line mr-3 text-primary"></i>
+                            <span>Analytics</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-3 text-gray-700 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-cog mr-3 text-primary"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-3 text-gray-700 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-question-circle mr-3 text-primary"></i>
+                            <span>Support</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-6">
+            <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-dark">Dashboard</h1>
+                    <p class="text-gray-600">Welcome back, Admin. Here's what's happening today.</p>
+                </div>
+                <div class="mt-4 md:mt-0 flex items-center space-x-4">
+                    <div class="relative">
+                        <select id="language-select" class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:border-primary">
+                            <option value="en">English</option>
+                            <option value="fr">Français</option>
+                            <option value="sn">Soninké</option>
+                            <option value="bm">Bambara</option>
+                            <option value="wo">Wolof</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <button class="bg-primary hover:bg-orange-600 text-white px-4 py-2 rounded-md flex items-center">
+                        <i class="fas fa-download mr-2"></i> Export
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                <div class="dashboard-card bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-lg bg-blue-100 text-blue-500">
+                            <i class="fas fa-shopping-cart text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-gray-500 text-sm">Today's Orders</p>
+                            <p class="text-2xl font-bold">142</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <p class="text-green-500 text-sm">
+                            <i class="fas fa-arrow-up"></i> 12% from yesterday
+                        </p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-lg bg-green-100 text-green-500">
+                            <i class="fas fa-dollar-sign text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-gray-500 text-sm">Revenue</p>
+                            <p class="text-2xl font-bold">$2,840</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <p class="text-green-500 text-sm">
+                            <i class="fas fa-arrow-up"></i> 8% from last week
+                        </p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-lg bg-purple-100 text-purple-500">
+                            <i class="fas fa-users text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-gray-500 text-sm">Active Customers</p>
+                            <p class="text-2xl font-bold">1,248</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <p class="text-green-500 text-sm">
+                            <i class="fas fa-arrow-up"></i> 5% from last month
+                        </p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-lg bg-yellow-100 text-yellow-500">
+                            <i class="fas fa-motorcycle text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-gray-500 text-sm">Available Drivers</p>
+                            <p class="text-2xl font-bold">76</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <p class="text-red-500 text-sm">
+                            <i class="fas fa-arrow-down"></i> 3% from yesterday
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts and Analytics -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <div class="bg-white rounded-xl shadow p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-bold text-dark">Revenue Overview</h2>
+                        <div>
+                            <button class="text-sm text-gray-500 hover:text-primary">Weekly</button>
+                            <button class="text-sm text-primary font-medium ml-2">Monthly</button>
+                            <button class="text-sm text-gray-500 hover:text-primary ml-2">Yearly</button>
+                        </div>
+                    </div>
+                    <div class="chart-container flex items-center justify-center">
+                        <div class="w-full h-full flex items-end space-x-2">
+                            <div class="flex flex-col items-center flex-1">
+                                <div class="w-full bg-gray-200 rounded-t-lg" style="height: 200px;">
+                                    <div class="bg-primary w-full rounded-t-lg" style="height: 150px;"></div>
+                                </div>
+                                <span class="text-sm text-gray-500 mt-2">Jan</span>
+                            </div>
+                            <div class="flex flex-col items-center flex-1">
+                                <div class="w-full bg-gray-200 rounded-t-lg" style="height: 200px;">
+                                    <div class="bg-primary w-full rounded-t-lg" style="height: 180px;"></div>
+                                </div>
+                                <span class="text-sm text-gray-500 mt-2">Feb</span>
+                            </div>
+                            <div class="flex flex-col items-center flex-1">
+                                <div class="w-full bg-gray-200 rounded-t-lg" style="height: 200px;">
+                                    <div class="bg-primary w-full rounded-t-lg" style="height: 160px;"></div>
+                                </div>
+                                <span class="text-sm text-gray-500 mt-2">Mar</span>
+                            </div>
+                            <div class="flex flex-col items-center flex-1">
+                                <div class="w-full bg-gray-200 rounded-t-lg" style="height: 200px;">
+                                    <div class="bg-primary w-full rounded-t-lg" style="height: 200px;"></div>
+                                </div>
+                                <span class="text-sm text-gray-500 mt-2">Apr</span>
+                            </div>
+                            <div class="flex flex-col items-center flex-1">
+                                <div class="w-full bg-gray-200 rounded-t-lg" style="height: 200px;">
+                                    <div class="bg-primary w-full rounded-t-lg" style="height: 140px;"></div>
+                                </div>
+                                <span class="text-sm text-gray-500 mt-2">May</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow p-6">
+                    <h2 class="text-lg font-bold text-dark mb-4">Order Status Distribution</h2>
+                    <div class="flex items-center justify-center h-64">
+                        <div class="relative w-48 h-48 rounded-full flex items-center justify-center">
+                            <div class="absolute inset-0 border-8 border-blue-500 rounded-full" style="clip-path: inset(0 50% 0 0);"></div>
+                            <div class="absolute inset-0 border-8 border-green-500 rounded-full" style="clip-path: inset(0 0 0 50%);"></div>
+                            <div class="absolute inset-0 border-8 border-yellow-500 rounded-full" style="clip-path: inset(50% 0 0 0);"></div>
+                            <div class="absolute inset-0 border-8 border-purple-500 rounded-full" style="clip-path: inset(0 0 50% 0);"></div>
+                            <div class="absolute inset-0 bg-white rounded-full w-32 h-32"></div>
+                            <div class="text-center">
+                                <p class="text-2xl font-bold">142</p>
+                                <p class="text-gray-500 text-sm">Orders</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-blue-500 rounded mr-2"></div>
+                            <span class="text-sm">Pending (30)</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-green-500 rounded mr-2"></div>
+                            <span class="text-sm">Delivered (85)</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-yellow-500 rounded mr-2"></div>
+                            <span class="text-sm">Preparing (15)</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-purple-500 rounded mr-2"></div>
+                            <span class="text-sm">Delivering (12)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subscription Plans -->
+            <div class="bg-white rounded-xl shadow p-6 mb-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-dark">Subscription Plans</h2>
+                    <button class="text-primary hover:text-orange-600">
+                        <i class="fas fa-cog"></i> Manage Plans
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Basic Plan -->
+                    <div class="subscription-plan border rounded-xl p-6 relative">
+                        <div class="absolute top-4 right-4 bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Popular</div>
+                        <h3 class="text-xl font-bold text-dark mb-2">Basic</h3>
+                        <div class="mb-4">
+                            <span class="text-3xl font-bold">$7.99</span>
+                            <span class="text-gray-500">/month</span>
+                        </div>
+                        <p class="text-gray-600 mb-6">For light users who order occasionally</p>
+                        <ul class="space-y-3 mb-6">
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                <span>Standard delivery</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-times-circle text-gray-300 mr-2"></i>
+                                <span class="text-gray-400">Free delivery</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-times-circle text-gray-300 mr-2"></i>
+                                <span class="text-gray-400">Priority service</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-times-circle text-gray-300 mr-2"></i>
+                                <span class="text-gray-400">Discounts</span>
+                            </li>
+                        </ul>
+                        <div class="text-center">
+                            <p class="text-gray-500 text-sm mb-2">~2 orders/month</p>
+                            <p class="text-gray-700 mb-4">Saves ~$2/month</p>
+                            <button class="w-full py-2 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200">Current Plan</button>
+                        </div>
+                    </div>
+
+                    <!-- Standard Plan -->
+                    <div class="subscription-plan border-2 border-primary rounded-xl p-6 relative active-plan">
+                        <div class="absolute top-4 right-4 bg-primary text-white px-3 py-1 rounded-full text-sm">Recommended</div>
+                        <h3 class="text-xl font-bold text-dark mb-2">Standard</h3>
+                        <div class="mb-4">
+                            <span class="text-3xl font-bold">$14.99</span>
+                            <span class="text-gray-500">/month</span>
+                        </div>
+                        <p class="text-gray-600 mb-6">For regular users with consistent orders</p>
+                        <ul class="space-y-3 mb-6">
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                <span>Standard delivery</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                <span>Free delivery in eligible zones</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-times-circle text-gray-300 mr-2"></i>
+                                <span class="text-gray-400">Priority service</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-times-circle text-gray-300 mr-2"></i>
+                                <span class="text-gray-400">Discounts</span>
+                            </li>
+                        </ul>
+                        <div class="text-center">
+                            <p class="text-gray-500 text-sm mb-2">~3-4 orders/month</p>
+                            <p class="text-gray-700 mb-4">Saves ~$5/month</p>
+                            <button class="w-full py-2 bg-primary text-white rounded-md hover:bg-orange-600">Upgrade</button>
+                        </div>
+                    </div>
+
+                    <!-- Premium Plan -->
+                    <div class="subscription-plan border rounded-xl p-6 relative">
+                        <h3 class="text-xl font-bold text-dark mb-2">Premium</h3>
+                        <div class="mb-4">
+                            <span class="text-3xl font-bold">$21.99</span>
+                            <span class="text-gray-500">/month</span>
+                        </div>
+                        <p class="text-gray-600 mb-6">For frequent users who want the best experience</p>
+                        <ul class="space-y-3 mb-6">
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                <span>Standard delivery</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                <span>Free delivery</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                <span>Priority service</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                <span>10% off all orders</span>
+                            </li>
+                        </ul>
+                        <div class="text-center">
+                            <p class="text-gray-500 text-sm mb-2">~5+ orders/month</p>
+                            <p class="text-gray-700 mb-4">Saves ~$8/month + perks</p>
+                            <button class="w-full py-2 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200">Upgrade</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Orders -->
+            <div class="bg-white rounded-xl shadow p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-dark">Recent Orders</h2>
+                    <button class="text-primary hover:text-orange-600">
+                        View All Orders
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Restaurant</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-00124</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">John Smith</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Le Bernardin</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$42.50</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="order-status status-delivered">Delivered</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10:23 AM</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-00123</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Maria Garcia</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Joe's Pizza</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$18.75</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="order-status status-delivering">Delivering</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">9:45 AM</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-00122</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">David Johnson</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Sushi Yasuda</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$65.20</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="order-status status-preparing">Preparing</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">9:12 AM</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-00121</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Sarah Williams</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Shake Shack</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$24.99</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="order-status status-pending">Pending</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">8:30 AM</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-00120</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Michael Brown</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Xi'an Famous Foods</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$31.40</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="order-status status-delivered">Delivered</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Yesterday</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Language selection handling
+        document.getElementById('language-select').addEventListener('change', function() {
+            const selectedLang = this.value;
+            alert(`Language changed to: ${selectedLang === 'en' ? 'English' : selectedLang === 'fr' ? 'Français' : selectedLang === 'sn' ? 'Soninké' : selectedLang === 'bm' ? 'Bambara' : 'Wolof'}`);
+        });
+
+        // Simulate revenue chart with animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const chartBars = document.querySelectorAll('.chart-container .bg-primary');
+            chartBars.forEach(bar => {
+                const targetHeight = bar.style.height;
+                bar.style.height = '0';
+                setTimeout(() => {
+                    bar.style.transition = 'height 1s ease-in-out';
+                    bar.style.height = targetHeight;
+                }, 300);
+            });
+        });
+    </script>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=Noiumax/toulel" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
+</html>
